@@ -2,77 +2,48 @@ import streamlit as st
 from st_supabase_connection import SupabaseConnection
 from login import show_login
 from upload_data import show_upload_dashboard
-# Import file menu/halaman lain di sini nanti
 
-st.set_page_config(page_title="Portal System", layout="wide")
-
-# CSS untuk tampilan Grid Kotak Putih (Dashboard Style)
-st.markdown("""
-    <style>
-    .main-button {
-        background-color: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 40px;
-        text-align: center;
-        transition: 0.3s;
-        cursor: pointer;
-        color: black;
-        font-weight: bold;
-        display: block;
-        margin-bottom: 20px;
-        text-decoration: none;
-    }
-    .main-button:hover {
-        background-color: #f0f2f6;
-        border-color: #ff4b4b;
-    }
-""", unsafe_allow_html=True)
-
-conn = st.connection("supabase", type=SupabaseConnection)
-
+# Konfigurasi Halaman
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 if "current_page" not in st.session_state:
-    st.session_state["current_page"] = "menu" # Halaman awal setelah login
+    st.session_state["current_page"] = "menu"
+
+conn = st.connection("supabase", type=SupabaseConnection)
 
 # --- LOGIKA NAVIGASI ---
 if not st.session_state["authenticated"]:
     show_login(conn)
 else:
-    # Sidebar Global
-    st.sidebar.title("Informasi Akun")
-    st.sidebar.write(f"Logged in as:\n{st.session_state['user_email']}")
-    
-    if st.sidebar.button("Home Menu"):
-        st.session_state["current_page"] = "menu"
-        st.rerun()
+    # SATU-SATUNYA TEMPAT UNTUK SIDEBAR
+    with st.sidebar:
+        st.title("Informasi Akun")
+        st.write(f"Logged in as:\n{st.session_state['user_email']}")
         
-    if st.sidebar.button("Logout"):
-        st.session_state["authenticated"] = False
-        st.rerun()
+        # Tombol kembali ke Menu Utama
+        if st.button("Home Menu", key="home_btn"):
+            st.session_state["current_page"] = "menu"
+            st.rerun()
+            
+        # Tombol Logout
+        if st.button("Logout", key="logout_btn"):
+            conn.client.auth.sign_out()
+            st.session_state["authenticated"] = False
+            st.rerun()
 
-    # Konten berdasarkan halaman yang dipilih
+    # Konten Utama
     if st.session_state["current_page"] == "menu":
-        # TAMPILAN MENU UTAMA (GRID KOTAK PUTIH)
-        st.title("Selamat Datang di Portal Utama")
-        st.subheader("Pilih Layanan:")
-        
-        # Membuat Grid 4 kolom seperti di gambar Anda
+        st.title("Main Menu")
+        # Layout Grid (Kartu Putih)
         col1, col2, col3, col4 = st.columns(4)
-        
         with col1:
-            if st.button("📤 Upload Data", use_container_width=True):
+            # Gunakan st.button sebagai kartu
+            if st.button("📤 Upload Data", use_container_width=True, key="menu_upload"):
                 st.session_state["current_page"] = "upload"
                 st.rerun()
-        
         with col2:
-            if st.button("📊 Report Sales", use_container_width=True):
-                st.info("Halaman ini sedang dikembangkan")
-        
-        # Tambahkan kotak lainnya di sini sesuai kebutuhan
-        with col3: st.button("📦 Inventory", use_container_width=True)
-        with col4: st.button("💰 Settlement", use_container_width=True)
+            st.button("📊 Report Sales", use_container_width=True, disabled=True)
+        # Tambahkan col3, col4 dst jika perlu
 
     elif st.session_state["current_page"] == "upload":
         show_upload_dashboard(conn)
