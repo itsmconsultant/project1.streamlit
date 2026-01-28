@@ -84,21 +84,21 @@ else:
             st.rerun()
 
     # KONTEN UTAMA
-   # Baris 1
-row1_col1, row1_col2 = st.columns(2)
-with row1_col1:
-    if st.button("📤\n\nUpload Data", key="c1"):
-        st.session_state["current_page"] = "upload"
-        st.rerun()
-with row1_col2:
-    st.button("📊\n\nReport Sales", key="c2", disabled=True)
-
-# Baris 2
-row2_col1, row2_col2 = st.columns(2)
-with row2_col1:
-    st.button("📦\n\nInventory", key="c3", disabled=True)
-with row2_col2:
-    st.button("💰\n\nSettlement", key="c4", disabled=True)
+    # Baris 1
+    row1_col1, row1_col2 = st.columns(2)
+    with row1_col1:
+        if st.button("📤\n\nUpload Data", key="c1"):
+            st.session_state["current_page"] = "upload"
+            st.rerun()
+    with row1_col2:
+        st.button("📊\n\nReport Sales", key="c2", disabled=True)
+    
+    # Baris 2
+    row2_col1, row2_col2 = st.columns(2)
+    with row2_col1:
+        st.button("📦\n\nInventory", key="c3", disabled=True)
+    with row2_col2:
+        st.button("💰\n\nSettlement", key="c4", disabled=True)
 
 
     elif st.session_state["current_page"] == "upload":
