@@ -21,7 +21,7 @@ def show_run_procedure(conn):
                 # Parameter dikirimkan dalam bentuk dictionary: {"nama_parameter": nilai}
                 response = conn.client.schema("project1").rpc(
                     "run_all_procedure", 
-                    {"tanggal": tanggal_str}
+                    {"vgetdate": tanggal_str}
                 ).execute()
                 
                 # 3. Menampilkan Hasil
