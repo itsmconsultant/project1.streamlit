@@ -2,6 +2,7 @@ import streamlit as st
 
 def show_login(conn):
     st.title("🔐 Login ke Sistem")
+    
     with st.form("login_form"):
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
@@ -9,11 +10,11 @@ def show_login(conn):
         
         if submit:
             try:
-                # Proses autentikasi
+                # Auth menggunakan Supabase
                 res = conn.client.auth.sign_in_with_password({"email": email, "password": password})
                 if res.user:
                     st.session_state["authenticated"] = True
                     st.session_state["user_email"] = res.user.email
                     st.rerun()
             except Exception:
-                st.error("Login Gagal: Email atau Password salah.")
+                st.error("Login Gagal: Pastikan email dan password benar.")
