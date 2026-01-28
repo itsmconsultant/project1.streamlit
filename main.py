@@ -65,7 +65,8 @@ else:
                 st.session_state["current_page"] = "procedure"
                 st.rerun()
         
-        
+        st.divider()
+        st.title("Report")
         col3, col4 = st.columns(2)
         
         with col3:
