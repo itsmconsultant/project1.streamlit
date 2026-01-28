@@ -2,15 +2,15 @@ import streamlit as st
 from sqlalchemy import text
 
 def show_run_procedure(conn): # Tetap terima conn jika perlu, tapi kita buat koneksi baru di sini
-    st.title("⚙️ Jalankan Store Procedure")
+    st.title("⚙️ Jalankan Proses Data")
     
-    selected_date = st.date_input("Pilih Tanggal Parameter:")
+    selected_date = st.date_input("Pilih Tanggal :")
     
-    if st.button("Jalankan Prosedur"):
+    if st.button("Proses Data"):
         # Streamlit akan otomatis mencari [connections.postgresql] di Secrets
         db_sql = st.connection("postgresql", type="sql")
         
-        with st.spinner("Eksekusi Procedure..."):
+        with st.spinner("Eksekusi Data..."):
             try:
                 with db_sql.session as session:
                     # Menjalankan CALL secara eksplisit melalui SQLAlchemy
