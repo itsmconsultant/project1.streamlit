@@ -14,53 +14,58 @@ st.set_page_config(
 st.markdown("""
     <style>
     
-    /* Maksa kontainer kolom agar lebih rapat dan lebar */
+    /* 1. Paksa Grid Kolom agar menggunakan seluruh lebar yang ada */
     [data-testid="stHorizontalBlock"] {
-        gap: 1rem;
+        width: 100%;
+        gap: 2rem;
     }
 
-    /* Style CARD hanya untuk Main Content */
+    /* 2. STYLE CARD UTAMA */
     [data-testid="stMain"] div.stButton > button {
-        background-color: #ffffff;
-        color: #31333F;
-        border: 1px solid #e6e9ef;
-        border-radius: 12px;
-        padding: 50px 10px; 
-        font-size: 18px;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: all 0.2s ease-in-out;
+        /* Reset & Base Style */
+        background-color: #ffffff !important;
+        color: #31333F !important;
+        border: 1px solid #e6e9ef !important;
+        border-radius: 15px !important;
         
-        /* Kunci agar Card Lebar */
-        width: 100% !important;
-        min-height: 180px;
+        /* Ukuran Card */
+        width: 100% !important;      /* Paksa lebar 100% dari kolom */
+        min-width: 100% !important;  /* Tambahan penguat lebar */
+        min-height: 250px !important; /* Tinggi kotak */
+        padding: 20px !important;
         
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        /* Layout isi di dalam tombol */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        
+        /* Efek Shadow */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+        transition: all 0.3s ease-in-out !important;
+        white-space: pre-wrap !important; /* Agar \n terbaca untuk pindah baris */
     }
     
+    /* Efek Hover Card */
     [data-testid="stMain"] div.stButton > button:hover {
-        border-color: #ff4b4b;
-        color: #ff4b4b;
-        background-color: #fcfcfc;
-        transform: scale(1.02);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        border-color: #ff4b4b !important;
+        color: #ff4b4b !important;
+        transform: translateY(-8px) !important;
+        box-shadow: 0 12px 20px rgba(0,0,0,0.15) !important;
     }
 
-    /* Kembalikan Sidebar ke tombol Standar Streamlit */
+    /* 3. RESET SIDEBAR (Kembali ke tombol standar) */
     [data-testid="stSidebar"] div.stButton > button {
-        background-color: transparent !important;
-        padding: 5px 15px !important;
-        min-height: unset !important;
         width: 100% !important;
-        border-radius: 4px !important;
+        min-height: unset !important;
+        min-width: unset !important;
+        padding: 5px 10px !important;
+        border-radius: 5px !important;
         font-size: 14px !important;
-        font-weight: normal !important;
+        background-color: transparent !important;
         box-shadow: none !important;
-        transform: none !important;
         border: 1px solid rgba(49, 51, 63, 0.2) !important;
+        transform: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
