@@ -20,7 +20,7 @@ def show_run_procedure(conn):
                 # Nama fungsi harus sesuai dengan yang ada di database
                 # Parameter dikirimkan dalam bentuk dictionary: {"nama_parameter": nilai}
                 response = conn.client.schema("project1").rpc(
-                    "run_all_procedure", 
+                    "run_all_procedures", 
                     {"vgetdate": tanggal_str}
                 ).execute()
                 
