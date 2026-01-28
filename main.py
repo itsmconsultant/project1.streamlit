@@ -61,7 +61,7 @@ else:
                 st.rerun()
         
         with col2: # Misalnya kotak kedua
-            if st.button("⚙️\n\nRun Procedure", key="card_proc", use_container_width=True):
+            if st.button("⚙️\n\nProcess Data", key="card_proc", use_container_width=True):
                 st.session_state["current_page"] = "procedure"
                 st.rerun()
             
