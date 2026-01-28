@@ -19,7 +19,7 @@ def show_run_procedure(conn):
                 # 2. Memanggil RPC (Remote Procedure Call)
                 # Nama fungsi harus sesuai dengan yang ada di database
                 # Parameter dikirimkan dalam bentuk dictionary: {"nama_parameter": nilai}
-                response = conn.client.rpc(
+                response = conn.client.schema("project1").rpc(
                     "run_all_procedure", 
                     {"tanggal": tanggal_str}
                 ).execute()
