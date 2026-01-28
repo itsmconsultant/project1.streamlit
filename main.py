@@ -13,7 +13,6 @@ st.set_page_config(
 # 2. CSS KUSTOM (Target spesifik area Main Menu)
 st.markdown("""
     <style>
-    header {visibility: hidden;}
     
     /* Maksa kontainer kolom agar lebih rapat dan lebar */
     [data-testid="stHorizontalBlock"] {
