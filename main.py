@@ -3,71 +3,98 @@ from st_supabase_connection import SupabaseConnection
 from login import show_login
 from upload_data import show_upload_dashboard
 
-# CSS untuk tampilan Grid Kotak Putih (Dashboard Style)
+# 1. SET WIDE MODE DEFAULT
+st.set_page_config(
+    page_title="Portal System", 
+    layout="wide", 
+    initial_sidebar_state="expanded"
+)
+
+# 2. CSS KUSTOM UNTUK MODERNIZE UI (Card Style)
 st.markdown("""
     <style>
-    .main-button {
+    /* Menghilangkan header default */
+    header {visibility: hidden;}
+    
+    /* Style untuk tombol agar terlihat seperti Card */
+    div.stButton > button {
         background-color: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 40px;
-        text-align: center;
-        transition: 0.3s;
-        cursor: pointer;
-        color: black;
+        color: #31333F;
+        border: 1px solid #e6e9ef;
+        border-radius: 15px;
+        padding: 60px 20px;
+        font-size: 20px;
         font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        width: 100%;
         display: block;
-        margin-bottom: 20px;
-        text-decoration: none;
     }
-    .main-button:hover {
-        background-color: #f0f2f6;
+    
+    div.stButton > button:hover {
         border-color: #ff4b4b;
+        color: #ff4b4b;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        background-color: #ffffff;
+    }
+
+    /* Penyesuaian teks caption di bawah icon */
+    .card-text {
+        text-align: center;
+        margin-top: -40px;
+        font-weight: 600;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Konfigurasi Halaman
+# 3. INISIALISASI KONEKSI & SESSION
+conn = st.connection("supabase", type=SupabaseConnection)
+
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 if "current_page" not in st.session_state:
     st.session_state["current_page"] = "menu"
 
-conn = st.connection("supabase", type=SupabaseConnection)
-
 # --- LOGIKA NAVIGASI ---
 if not st.session_state["authenticated"]:
     show_login(conn)
 else:
-    # SATU-SATUNYA TEMPAT UNTUK SIDEBAR
+    # SIDEBAR (Hanya diatur di sini untuk menghindari Duplication Error)
     with st.sidebar:
         st.title("Informasi Akun")
-        st.write(f"Logged in as:\n{st.session_state['user_email']}")
-        
-        # Tombol kembali ke Menu Utama
-        if st.button("Home Menu", key="home_btn"):
+        st.write(f"Logged in as:\n{st.session_state.get('user_email', 'User')}")
+        st.divider()
+        if st.button("🏠 Home Menu", key="side_home"):
             st.session_state["current_page"] = "menu"
             st.rerun()
-            
-        # Tombol Logout
-        if st.button("Logout", key="logout_btn"):
+        if st.button("🚪 Logout", key="side_logout"):
             conn.client.auth.sign_out()
             st.session_state["authenticated"] = False
             st.rerun()
 
-    # Konten Utama
+    # KONTEN UTAMA
     if st.session_state["current_page"] == "menu":
         st.title("Main Menu")
-        # Layout Grid (Kartu Putih)
+        st.write("Silakan pilih modul yang ingin Anda akses:")
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # GRID LAYOUT (CARD STYLE)
         col1, col2, col3, col4 = st.columns(4)
+        
         with col1:
-            # Gunakan st.button sebagai kartu
-            if st.button("📤 Upload Data", use_container_width=True, key="menu_upload"):
+            if st.button("📤\n\nUpload Data", key="card_upload"):
                 st.session_state["current_page"] = "upload"
                 st.rerun()
+        
         with col2:
-            st.button("📊 Report Sales", use_container_width=True, disabled=True)
-        # Tambahkan col3, col4 dst jika perlu
+            st.button("📊\n\nReport Sales", key="card_report", disabled=True)
+            
+        with col3:
+            st.button("📦\n\nInventory", key="card_inv", disabled=True)
+            
+        with col4:
+            st.button("💰\n\nSettlement", key="card_settle", disabled=True)
 
     elif st.session_state["current_page"] == "upload":
         show_upload_dashboard(conn)
