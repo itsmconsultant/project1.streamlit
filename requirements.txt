@@ -3,3 +3,5 @@ pandas
 st-supabase-connection
 openpyxl
 supabase
+sqlalchemy
+psycopg2-binary
