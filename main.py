@@ -10,23 +10,32 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# 2. CSS KUSTOM (Target spesifik hanya untuk Card di Main Menu)
+# 2. CSS KUSTOM (Target spesifik area Main Menu)
 st.markdown("""
     <style>
-    /* Style khusus untuk Container Card di Main Menu */
-    /* Kita gunakan selector khusus agar tidak merusak Sidebar */
+    header {visibility: hidden;}
+    
+    /* Maksa kontainer kolom agar lebih rapat dan lebar */
+    [data-testid="stHorizontalBlock"] {
+        gap: 1rem;
+    }
+
+    /* Style CARD hanya untuk Main Content */
     [data-testid="stMain"] div.stButton > button {
         background-color: #ffffff;
         color: #31333F;
         border: 1px solid #e6e9ef;
-        border-radius: 15px;
-        padding: 80px 20px; /* Padding atas-bawah diperbesar untuk kesan Card */
+        border-radius: 12px;
+        padding: 50px 10px; 
         font-size: 18px;
         font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        width: 100%; /* Memaksa lebar mengikuti kolom */
-        min-height: 200px; /* Memastikan tinggi minimum agar berbentuk kotak */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.2s ease-in-out;
+        
+        /* Kunci agar Card Lebar */
+        width: 100% !important;
+        min-height: 180px;
+        
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -36,26 +45,28 @@ st.markdown("""
     [data-testid="stMain"] div.stButton > button:hover {
         border-color: #ff4b4b;
         color: #ff4b4b;
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        background-color: #ffffff;
+        background-color: #fcfcfc;
+        transform: scale(1.02);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     }
 
-    /* Memastikan tombol Sidebar tetap standar (Tidak terpengaruh CSS Card) */
+    /* Kembalikan Sidebar ke tombol Standar Streamlit */
     [data-testid="stSidebar"] div.stButton > button {
-        background-color: transparent;
-        padding: 0.25rem 0.75rem;
-        min-height: 0px;
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: normal;
-        box-shadow: none;
-        width: auto;
+        background-color: transparent !important;
+        padding: 5px 15px !important;
+        min-height: unset !important;
+        width: 100% !important;
+        border-radius: 4px !important;
+        font-size: 14px !important;
+        font-weight: normal !important;
+        box-shadow: none !important;
+        transform: none !important;
+        border: 1px solid rgba(49, 51, 63, 0.2) !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. INISIALISASI KONEKSI & SESSION
+# 3. KONEKSI & NAVIGASI
 conn = st.connection("supabase", type=SupabaseConnection)
 
 if "authenticated" not in st.session_state:
@@ -63,11 +74,10 @@ if "authenticated" not in st.session_state:
 if "current_page" not in st.session_state:
     st.session_state["current_page"] = "menu"
 
-# --- LOGIKA NAVIGASI ---
 if not st.session_state["authenticated"]:
     show_login(conn)
 else:
-    # SIDEBAR (Tombol standar)
+    # SIDEBAR
     with st.sidebar:
         st.title("Informasi Akun")
         st.write(f"Logged in as:\n{st.session_state.get('user_email', 'User')}")
@@ -83,26 +93,22 @@ else:
     # KONTEN UTAMA
     if st.session_state["current_page"] == "menu":
         st.title("Main Menu")
-        st.write("Silakan pilih modul yang ingin Anda akses:")
+        st.write("Pilih layanan di bawah ini:")
         st.markdown("<br>", unsafe_allow_html=True)
         
-        # GRID LAYOUT (4 Kolom untuk Card yang lebih lebar)
+        # GUNAKAN 3 ATAU 4 KOLOM (Semakin sedikit kolom, Card semakin lebar)
         col1, col2, col3, col4 = st.columns(4)
         
         with col1:
-            # Gunakan \n yang cukup untuk memisahkan Icon dan Teks
             if st.button("📤\n\nUpload Data", key="card_upload"):
                 st.session_state["current_page"] = "upload"
                 st.rerun()
-        
         with col2:
-            st.button("📊\n\nReport Sales", key="card_report", disabled=True)
-            
+            st.button("📊\n\nReport Sales", key="card_rep", disabled=True)
         with col3:
             st.button("📦\n\nInventory", key="card_inv", disabled=True)
-            
         with col4:
-            st.button("💰\n\nSettlement", key="card_settle", disabled=True)
+            st.button("💰\n\nSettlement", key="card_set", disabled=True)
 
     elif st.session_state["current_page"] == "upload":
         show_upload_dashboard(conn)
