@@ -1,20 +1,20 @@
 import streamlit as st
 from st_supabase_connection import SupabaseConnection
-# Import fungsi dari file lain
+# Mengimpor fungsi dari file lokal
 from login import show_login
 from upload_data import show_upload_dashboard
 
-# Konfigurasi Halaman (Hanya boleh ada satu di file utama)
+# Konfigurasi halaman tunggal
 st.set_page_config(page_title="Sistem Upload Data", layout="wide")
 
-# Inisialisasi Koneksi
+# Koneksi Global
 conn = st.connection("supabase", type=SupabaseConnection)
 
-# Cek Status Login di Session State
+# Inisialisasi status login
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
-# Logika Navigasi
+# Navigasi
 if not st.session_state["authenticated"]:
     show_login(conn)
 else:
