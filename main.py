@@ -13,59 +13,48 @@ st.set_page_config(
 # 2. CSS KUSTOM (Target spesifik area Main Menu)
 st.markdown("""
     <style>
-    
-    /* 1. Paksa Grid Kolom agar menggunakan seluruh lebar yang ada */
-    [data-testid="stHorizontalBlock"] {
-        width: 100%;
-        gap: 2rem;
+    /* 2. PAKSA KOLOM MELEBAR */
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 calc(25% - 1rem) !important; /* Untuk 4 kolom */
+        min-width: 200px !important;
     }
 
-    /* 2. STYLE CARD UTAMA */
-    [data-testid="stMain"] div.stButton > button {
-        /* Reset & Base Style */
+    /* 3. STYLE CARD UTAMA (Sangat Agresif) */
+    [data-testid="stMain"] [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] div.stButton > button {
         background-color: #ffffff !important;
         color: #31333F !important;
         border: 1px solid #e6e9ef !important;
         border-radius: 15px !important;
         
-        /* Ukuran Card */
-        width: auto !important;      /* Paksa lebar 100% dari kolom */
-        min-width: 100% !important;  /* Tambahan penguat lebar */
-        min-height: 250px !important; /* Tinggi kotak */
-        padding: 20px !important;
+        /* Lebar Mutlak */
+        width: 100% !important;
+        display: block !important;
+        min-height: 220px !important;
         
-        /* Layout isi di dalam tombol */
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        
-        /* Efek Shadow */
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-        transition: all 0.3s ease-in-out !important;
-        white-space: pre-wrap !important; /* Agar \n terbaca untuk pindah baris */
-    }
-    
-    /* Efek Hover Card */
-    [data-testid="stMain"] div.stButton > button:hover {
-        border-color: #ff4b4b !important;
-        color: #ff4b4b !important;
-        transform: translateY(-8px) !important;
-        box-shadow: 0 12px 20px rgba(0,0,0,0.15) !important;
+        /* Bayangan dan Transisi */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        transition: all 0.3s ease !important;
     }
 
-    /* 3. RESET SIDEBAR (Kembali ke tombol standar) */
-    [data-testid="stSidebar"] div.stButton > button {
+    /* Efek Hover */
+    [data-testid="stMain"] div.stButton > button:hover {
+        border-color: #ff4b4b !important;
+        transform: translateY(-5px) !important;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
+        background-color: #ffffff !important;
+    }
+
+    /* 4. RESET SIDEBAR (Tetap Standar) */
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] div.stButton > button {
         width: 100% !important;
         min-height: unset !important;
-        min-width: unset !important;
-        padding: 5px 10px !important;
-        border-radius: 5px !important;
-        font-size: 14px !important;
+        padding: 5px !important;
+        border-radius: 4px !important;
         background-color: transparent !important;
-        box-shadow: none !important;
         border: 1px solid rgba(49, 51, 63, 0.2) !important;
-        transform: none !important;
+        box-shadow: none !important;
+        font-size: 14px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -95,20 +84,21 @@ else:
             st.rerun()
 
     # KONTEN UTAMA
-    if st.session_state["current_page"] == "menu":
-        st.title("Main Menu")
-        st.write("Pilih layanan di bawah ini:")
-        st.markdown("<br>", unsafe_allow_html=True)
-        
-        # GUNAKAN 3 ATAU 4 KOLOM (Semakin sedikit kolom, Card semakin lebar)
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            if st.button("📤\n\nUpload Data", key="card_upload"):
-                st.session_state["current_page"] = "upload"
-                st.rerun()
-        with col2:
-            st.button("📊\n\nReport Sales", key="card_rep", disabled=True)
+   # Baris 1
+row1_col1, row1_col2 = st.columns(2)
+with row1_col1:
+    if st.button("📤\n\nUpload Data", key="c1"):
+        st.session_state["current_page"] = "upload"
+        st.rerun()
+with row1_col2:
+    st.button("📊\n\nReport Sales", key="c2", disabled=True)
+
+# Baris 2
+row2_col1, row2_col2 = st.columns(2)
+with row2_col1:
+    st.button("📦\n\nInventory", key="c3", disabled=True)
+with row2_col2:
+    st.button("💰\n\nSettlement", key="c4", disabled=True)
 
 
     elif st.session_state["current_page"] == "upload":
