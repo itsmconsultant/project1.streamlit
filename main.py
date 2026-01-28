@@ -13,9 +13,6 @@ st.set_page_config(
 # 2. CSS KUSTOM UNTUK MODERNIZE UI (Card Style)
 st.markdown("""
     <style>
-    /* Menghilangkan header default */
-    header {visibility: hidden;}
-    
     /* Style untuk tombol agar terlihat seperti Card */
     div.stButton > button {
         background-color: #ffffff;
