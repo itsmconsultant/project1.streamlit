@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import datetime
+import io
 
 def show_report_deposit_settlement(conn):
     st.title("📊 Rekonsiliasi Transaksi Deposit dan Settlement")
@@ -35,15 +36,23 @@ def show_report_deposit_settlement(conn):
                     df = pd.DataFrame(response.data)
                     st.success(f"Berhasil menemukan {len(df)} data.")
                     
-                    # Tombol Download
-                    st.download_button(
-                        label="📥 Download CSV",
-                        data=df.to_csv(index=False),
-                        file_name=f"report_{tanggal_str}.csv",
-                        mime="text/csv"
-                    )
+                    # --- PROSES KONVERSI KE EXCEL ---
+                    buffer = io.BytesIO()
+                    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                        df.to_excel(writer, index=False, sheet_name='Sheet1')
+                        # writer.save() # Tidak perlu di pandas versi terbaru
                     
-                    # Tampilkan Tabel
+                    download_data = buffer.getvalue()
+
+                    # Tombol Download Excel
+                    st.download_button(
+                        label="📥 Download Excel (.xlsx)",
+                        data=download_data,
+                        file_name=f"report_{tanggal_str}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+                    # --------------------------------
+                    
                     st.dataframe(df, use_container_width=True, hide_index=True)
                 else:
                     st.warning(f"Tidak ada data ditemukan untuk tanggal {tanggal_str}.")
