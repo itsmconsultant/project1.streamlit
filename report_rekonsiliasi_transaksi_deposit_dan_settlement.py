@@ -9,7 +9,8 @@ def show_report_rekonsiliasi_transaksi_deposit_dan_settlement():
     # 1. Input Parameter Tanggal
     col1, col2 = st.columns([1, 2])
     with col1:
-        selected_date = st.date_input("Pilih Tanggal:", st.session_state.get('last_date', st.date_today()))
+        default_date = st.session_state.get('last_date', date.today())
+        selected_date = st.date_input("Pilih Tanggal:", default_date)
     
     # Simpan tanggal terakhir ke session state agar tidak reset
     st.session_state['last_date'] = selected_date
