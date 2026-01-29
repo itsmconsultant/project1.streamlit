@@ -55,8 +55,3 @@ def show_report_rekonsiliasi_transaksi_deposit_dan_settlement():
                     
             except Exception as e:
                 st.error(f"Terjadi kesalahan saat mengambil data: {e}")
-
-    # Tombol Kembali di Sidebar
-    if st.sidebar.button("⬅️ Kembali ke Menu Utama"):
-        st.session_state["current_page"] = "menu"
-        st.rerun()
