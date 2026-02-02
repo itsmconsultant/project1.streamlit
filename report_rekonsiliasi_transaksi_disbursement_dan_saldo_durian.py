@@ -25,8 +25,8 @@ def show_report_disbursement_durian(conn):
                 # 3. Menggunakan API Select Supabase (Tanpa SQLAlchemy)
                 # .table() merujuk ke nama tabel, .select("*") mengambil semua kolom
                 response = conn.client.schema("moneypay").table("summary_disbursement") \
-                    .select("vendor,tanggal_proses,keterangan,jumlah_transaksi,penambahan_rupiah,pengurangan_rupiah,jumlah_transaksi_reversal,rupiah_reversal,jumlah_transaksi_reversal_beda_hari,rupiah_reversal_beda_hari,jumlah_transaksi_tanpa_reversal,rupiah_tanpa_reversal,rekonsiliasi_jumlah_transaksi,rekonsiliasi_rupiah,rekonsiliasi_tambah_kurang,saldo_rekonsiliasi_rupiah") \
-                    .eq("tanggal_proses", tanggal_str) \
+                    .select("vendor,tanggal_data,keterangan,jumlah_transaksi,penambahan_rupiah,pengurangan_rupiah,jumlah_transaksi_reversal,rupiah_reversal,jumlah_transaksi_reversal_beda_hari,rupiah_reversal_beda_hari,jumlah_transaksi_tanpa_reversal,rupiah_tanpa_reversal,rekonsiliasi_jumlah_transaksi,rekonsiliasi_rupiah,rekonsiliasi_tambah_kurang,saldo_rekonsiliasi_rupiah") \
+                    .eq("tanggal_data", tanggal_str) \
                     .order("urutan", desc=False) \
                     .execute()
 
