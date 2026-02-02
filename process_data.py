@@ -4,7 +4,7 @@ from sqlalchemy import text
 def show_run_procedure(conn): # Tetap terima conn jika perlu, tapi kita buat koneksi baru di sini
     st.title("⚙️ Jalankan Proses Data")
     
-    selected_date = st.date_input("Pilih Tanggal :")
+    selected_date = st.date_input("Pilih Tanggal Data yang akan di proses :")
     
     if st.button("Proses Data"):
         # Streamlit akan otomatis mencari [connections.postgresql] di Secrets
