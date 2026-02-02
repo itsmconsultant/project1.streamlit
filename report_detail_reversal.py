@@ -26,7 +26,7 @@ def show_report_detail_reversal(conn):
                 # .table() merujuk ke nama tabel, .select("*") mengambil semua kolom
                 response = conn.client.schema("moneypay").table("detail_reversal") \
                     .select("*") \
-                    .eq("tanggal_proses", tanggal_str) \
+                    .eq("transaction_time", tanggal_str) \
                     .execute()
 
                 # 4. Menampilkan Hasil
