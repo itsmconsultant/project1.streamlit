@@ -15,7 +15,7 @@ def show_run_procedure(conn): # Tetap terima conn jika perlu, tapi kita buat kon
                 with db_sql.session as session:
                     # Menjalankan CALL secara eksplisit melalui SQLAlchemy
                     session.execute(
-                        text("CALL project1.run_all_procedure(:tgl)"),
+                        text("CALL moneypay.run_all_procedure(:tgl)"),
                         {"tgl": selected_date.strftime("%Y-%m-%d")}
                     )
                     session.commit()
