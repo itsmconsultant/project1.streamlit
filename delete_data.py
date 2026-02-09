@@ -49,7 +49,7 @@ def show_delete_data(conn):
     st.write("Fitur ini hanya digunakan jika ada perbaikan / revisi data.")
     st.divider()
     
-    selected_date = st.date_input("Pilih Tanggal Data yang akan dihapus :")
+    selected_date = st.date_input("Pilih Tanggal Data:")
     
     # Tombol awal hanya memicu kemunculan pop-up
     if st.button("Hapus Data", type="secondary"):
