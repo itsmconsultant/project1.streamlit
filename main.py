@@ -37,6 +37,15 @@ if "current_page" not in st.session_state:
 if not st.session_state["authenticated"]:
     show_login(conn)
 else:
+    # --- LOGIKA AUTO-REFRESH SETELAH LOGIN ---
+    if "has_refreshed" not in st.session_state:
+        st.session_state["has_refreshed"] = False
+
+    # Jika baru saja login dan belum melakukan refresh otomatis
+    if not st.session_state["has_refreshed"]:
+        st.session_state["has_refreshed"] = True
+        st.rerun() # Ini akan menyegarkan koneksi WebSocket & Database
+    
     # SIDEBAR (Navigasi Samping)
     with st.sidebar:
         st.title("Informasi Akun")
@@ -48,6 +57,9 @@ else:
         if st.button("🚪 Logout", key="side_logout", use_container_width=True):
             conn.client.auth.sign_out()
             st.session_state["authenticated"] = False
+            # Hapus flag agar saat login lagi bisa refresh otomatis
+            if "has_refreshed" in st.session_state:
+                del st.session_state["has_refreshed"]
             st.rerun()
 
     # KONTEN UTAMA
