@@ -1,5 +1,6 @@
 import streamlit as st
 from st_supabase_connection import SupabaseConnection
+import extra_streamlit_components as stx  # Import library cookie
 from login import show_login
 from upload_data import show_upload_dashboard
 from process_data import show_run_procedure
@@ -8,40 +9,27 @@ from report_rekonsiliasi_transaksi_disbursement_dan_saldo_durian import show_rep
 from report_detail_reversal import show_report_detail_reversal
 from report_balance_flow import show_report_balance_flow
 from delete_data import show_delete_data
+from datetime import datetime, timedelta
 
-# 1. SET WIDE MODE DEFAULT
-st.set_page_config(
-    page_title="Portal System", 
-    layout="wide", 
-    initial_sidebar_state="expanded"
-)
+# 1. SET WIDE MODE
+st.set_page_config(page_title="Portal System", layout="wide", initial_sidebar_state="expanded")
 
-# 2. KONEKSI KE SUPABASE (MODIFIKASI STORAGE)
-# Kita paksa storage ke 'sessionStorage' agar tidak disinkronkan antar perangkat oleh Chrome/Edge
-conn = st.connection(
-    "supabase",
-    type=SupabaseConnection,
-    config={
-        "auth": {
-            "storage_key": "portal-session-key",
-            "storage": "sessionStorage", 
-            "persist_session": True,
-            "auto_confirm_it": True
-        }
-    }
-)
+# 2. INISIALISASI COOKIE MANAGER
+cookie_manager = stx.CookieManager()
 
-# 3. LOGIKA AUTENTIKASI
+# 3. KONEKSI SUPABASE
+conn = st.connection("supabase", type=SupabaseConnection)
+
+# 4. LOGIKA CEK LOGIN VIA COOKIE
+# Kita ambil flag 'is_logged_in' dari cookie browser
+is_logged_in_cookie = cookie_manager.get(cookie="is_logged_in")
+
 if "authenticated" not in st.session_state:
-    try:
-        # Cek apakah ada sesi di tab browser saat ini
-        session = conn.client.auth.get_session()
-        if session:
-            st.session_state["authenticated"] = True
-            st.session_state["user_email"] = session.user.email
-        else:
-            st.session_state["authenticated"] = False
-    except:
+    if is_logged_in_cookie == "true":
+        st.session_state["authenticated"] = True
+        # Ambil email dari cookie jika ada
+        st.session_state["user_email"] = cookie_manager.get(cookie="user_email")
+    else:
         st.session_state["authenticated"] = False
 
 if "current_page" not in st.session_state:
@@ -49,9 +37,18 @@ if "current_page" not in st.session_state:
 
 # --- LOGIKA NAVIGASI ---
 if not st.session_state.get("authenticated"):
+    # Tampilkan halaman login
+    # Catatan: Di dalam login.py, setelah login sukses, 
+    # Anda harus menambahkan: cookie_manager.set("is_logged_in", "true")
     show_login(conn)
+    
+    # Cek lagi setelah login sukses di login.py
+    if st.session_state.get("authenticated"):
+        cookie_manager.set("is_logged_in", "true", expires_at=datetime.now() + timedelta(days=1))
+        cookie_manager.set("user_email", st.session_state.get("user_email"), expires_at=datetime.now() + timedelta(days=1))
+        st.rerun()
 else:
-    # Auto-refresh setelah login pertama kali
+    # --- LOGIKA AUTO-REFRESH SETELAH LOGIN ---
     if "has_refreshed" not in st.session_state:
         st.session_state["has_refreshed"] = False
 
@@ -59,34 +56,36 @@ else:
         st.session_state["has_refreshed"] = True
         st.rerun() 
 
-    # SIDEBAR
+    # --- SIDEBAR ---
     with st.sidebar:
         st.title("Informasi Akun")
         st.write(f"Logged in as:\n{st.session_state.get('user_email', 'User')}")
         st.divider()
         
-        if st.button("🏠 Home Menu", key="side_home", use_container_width=True):
+        if st.button("🏠 Home Menu", use_container_width=True):
             st.session_state["current_page"] = "menu"
             st.rerun()
             
         if st.button("🚪 Logout", key="side_logout", use_container_width=True):
             try:
-                # Sign out standar (kompatibel dengan semua versi library)
                 conn.client.auth.sign_out()
             except:
                 pass
             
-            # Hapus semua state agar benar-benar bersih
+            # HAPUS COOKIE SECARA MANUAL
+            cookie_manager.delete("is_logged_in")
+            cookie_manager.delete("user_email")
+            
+            # Bersihkan session state
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
             
             st.rerun()
 
-    # --- KONTEN UTAMA ---
+    # --- KONTEN UTAMA (Sama seperti sebelumnya) ---
     if st.session_state["current_page"] == "menu":
         st.title("Data & Report Menu")
         st.divider()
-        
         col1, col2 = st.columns(2)
         with col1:
             if st.button("📤 Upload Data", key="btn_upload", use_container_width=True):
@@ -102,13 +101,9 @@ else:
         with col3:
             if st.button("📊 Rekon Deposit", use_container_width=True):
                 st.session_state["current_page"] = "report_rekonsiliasi_transaksi_deposit_dan_settlement"; st.rerun()
-            if st.button("📊 Detail Reversal", use_container_width=True):
-                st.session_state["current_page"] = "report_detail_reversal"; st.rerun()
         with col4:
             if st.button("📊 Rekon Disbursement", use_container_width=True):
                 st.session_state["current_page"] = "report_rekonsiliasi_transaksi_disbursement_dan_saldo_durian"; st.rerun()
-            if st.button("📊 Balance Flow", use_container_width=True):
-                st.session_state["current_page"] = "report_balance_flow"; st.rerun()
 
     # --- ROUTING ---
     elif st.session_state["current_page"] == "upload":
