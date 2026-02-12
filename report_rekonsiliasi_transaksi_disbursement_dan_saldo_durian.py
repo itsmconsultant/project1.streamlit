@@ -47,7 +47,7 @@ def show_report_disbursement_durian(conn):
                     st.download_button(
                         label="📥 Download Excel (.xlsx)",
                         data=download_data,
-                        file_name=f"report_{tanggal_str}.xlsx",
+                        file_name=f"Rekonsiliasi Transaksi Disbursement dan Saldo Durian {tanggal_str}.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
                     # --------------------------------
