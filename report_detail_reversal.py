@@ -46,7 +46,7 @@ def show_report_detail_reversal(conn):
                     st.download_button(
                         label="📥 Download Excel (.xlsx)",
                         data=download_data,
-                        file_name=f"report_{tanggal_str}.xlsx",
+                        file_name=f"Detail Reversal {tanggal_str}.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     )
                     # --------------------------------
