@@ -56,7 +56,15 @@ else:
     if not st.session_state["has_refreshed"]:
         st.session_state["has_refreshed"] = True
         st.rerun() # Ini akan menyegarkan koneksi WebSocket & Database
-    
+
+    # Tambahkan pengecekan ini sebelum menampilkan menu utama
+    if st.session_state.get("authenticated"):
+        current_session = conn.client.auth.get_session()
+        if not current_session:
+            # Jika browser ditutup tadi, maka session ini akan kosong
+            st.session_state["authenticated"] = False
+            st.rerun()
+        
     # SIDEBAR (Navigasi Samping)
     with st.sidebar:
         st.title("Informasi Akun")
