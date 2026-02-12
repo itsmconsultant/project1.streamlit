@@ -35,7 +35,7 @@ def execute_delete(selected_date):
                     DELETE FROM moneypay.deposit WHERE payment_at::date = :tgl;
                     DELETE FROM moneypay.disbursement WHERE payment_at::date = :tgl;
                     DELETE FROM moneypay.saldo_durian WHERE transaction_time::date = :tgl;
-                    DELETE FROM moneypay.settlement WHERE payment_date::date = :tgl;
+                    DELETE FROM moneypay.settlement WHERE payment_date_gmt_7::date = :tgl;
                 """)
                 session.execute(sql_query, {"tgl": tanggal_str})
                 session.commit()
