@@ -40,7 +40,7 @@ if not st.session_state.get("authenticated"):
     # Tampilkan halaman login
     # Catatan: Di dalam login.py, setelah login sukses, 
     # Anda harus menambahkan: cookie_manager.set("is_logged_in", "true")
-    show_login(conn)
+    show_login(conn, cookie_manager)
     
     # Cek lagi setelah login sukses di login.py
     if st.session_state.get("authenticated"):
